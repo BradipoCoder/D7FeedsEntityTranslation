@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * Implements hook_ctools_plugin_api().
+ *
+ * @param $owner
+ * @param $api
+ * @return array|null
+ */
+function feeds_entity_translation_ctools_plugin_api($owner, $api) {
+  if ($owner == 'feeds' && $api == 'plugins') {
+    return array('version' => 1);
+  }
+  return null;
+}
+
+/**
+ * Implements hook_feeds_plugins().
+ *
+ * @return mixed
+ */
+function feeds_entity_translation_feeds_plugins() {
+  $info['Node processor(entity translations)'] = array(
+    'name' => 'NETProcessor',
+    'description' => 'Create and update nodes for different languages from parsed content by using Entity Translation',
+    'help' => 'Create and update nodes for different languages from parsed content by using Entity Translation',
+    'handler' => array(
+      'parent' => 'FeedsNodeProcessor',
+      'class' => 'NETProcessor',
+      'file' => 'NETProcessor.inc',
+      'path' => drupal_get_path('module', 'feeds_entity_translation'),
+    ),
+  );
+  return $info;
+}

@@ -1,0 +1,7 @@
+name = Feeds Entity Translation
+description = Provides entity trasnslation support for Feeds
+core = 7.x
+package = Feeds
+dependencies[] = feeds
+dependencies[] = entity_translation
+
