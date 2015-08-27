@@ -151,7 +151,17 @@ class NETProcessor extends FeedsNodeProcessor
       }
     }
 
-    $this->setTranslatableTargetElement($source, $target_item, $target, $value);
+    // These callbacks do NOT know how do do Entity Translation so they will be banned
+    $bannedCallbacks = ['text_feeds_set_target'];
+
+    if (isset($targets[$target]['callback']) && !in_array($targets[$target]['callback'], $bannedCallbacks)) {
+      //dsm("CALLING CALLBACK($target): " . $targets[$target]['callback']);
+      // All target callbacks expect an array.
+      $value = is_array($value) ? $value : [$value];
+      call_user_func($targets[$target]['callback'], $source, $target_item, $target, $value, $mapping);
+    } else {
+      $this->setTranslatableTargetElement($source, $target_item, $target, $value);
+    }
   }
 
 
