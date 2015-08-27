@@ -228,7 +228,6 @@ class NETProcessor extends FeedsNodeProcessor
     return $form;
   }
 
-
   /**
    * @param string $fieldName
    * @return bool
