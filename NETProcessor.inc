@@ -152,8 +152,8 @@ class NETProcessor extends FeedsNodeProcessor
     }
 
     // These callbacks do NOT know how do do Entity Translation so they will be banned
+    // @todo: DIRTY!
     $bannedCallbacks = ['text_feeds_set_target'];
-
     if (isset($targets[$target]['callback']) && !in_array($targets[$target]['callback'], $bannedCallbacks)) {
       //dsm("CALLING CALLBACK($target): " . $targets[$target]['callback']);
       // All target callbacks expect an array.
