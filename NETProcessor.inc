@@ -195,7 +195,6 @@ class NETProcessor extends FeedsNodeProcessor
     $delta = 0;
     foreach ($values as $value) {
       if (is_scalar($value) && strlen($value)) {
-        //$field['und'][$delta][$column] = (string) $value;
         $target_item->{$target_element}[$languageKey][$delta]['value'] = (string) $value;
       }
       $delta++;
