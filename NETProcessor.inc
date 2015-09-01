@@ -155,7 +155,6 @@ class NETProcessor extends FeedsNodeProcessor
     // @todo: DIRTY!
     $bannedCallbacks = ['text_feeds_set_target'];
     if (isset($targets[$target]['callback']) && !in_array($targets[$target]['callback'], $bannedCallbacks)) {
-      //dsm("CALLING CALLBACK($target): " . $targets[$target]['callback']);
       // All target callbacks expect an array.
       $value = is_array($value) ? $value : [$value];
       call_user_func($targets[$target]['callback'], $source, $target_item, $target, $value, $mapping);
@@ -176,25 +175,30 @@ class NETProcessor extends FeedsNodeProcessor
     //dsm("Mapping($target_element)-> translatable:" .  ($translatable?"Y":"N"));
 
     // Title must always be set because it was unset by map method
+    // Title is always a single value
     if($target_element == 'title') {
+      $value = is_array($value) ? implode(" - ", $value) : $value;
       $target_item->$target_element = $value;
       return;
     }
 
     //Untranslatable fields can only be set when source is the same language as the entity's default language
     //@todo: make this an option
-    if ($translatable || $this->currentItemLanguageKey == $target_item->language) {
-      $languageKey = $translatable ? $this->currentItemLanguageKey : $this->neutralLanguageKey;
-      // Let me spell this out...
-      if($target_element == 'title') {
-        $translationValue = $value;
-      } else {
-        $translationValue = [$languageKey => [['value' => $value]]];
-      }
-      $target_item->$target_element = $translationValue;
-    } else {
-      //dsm("Field(($target_element)-lang:[".$target_item->language."]) is skipped for entity language: " . $this->currentItemLanguageKey);
+    if (!$translatable && $this->currentItemLanguageKey != $target_item->language) {
       unset($target_item->$target_element);
+      return;
+    }
+
+    $languageKey = $translatable ? $this->currentItemLanguageKey : $this->neutralLanguageKey;
+    $values = is_array($value) ? $value : [$value];
+
+    $delta = 0;
+    foreach ($values as $value) {
+      if (is_scalar($value) && strlen($value)) {
+        //$field['und'][$delta][$column] = (string) $value;
+        $target_item->{$target_element}[$languageKey][$delta]['value'] = (string) $value;
+      }
+      $delta++;
     }
   }
 
